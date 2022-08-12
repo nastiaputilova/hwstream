@@ -76,5 +76,4 @@ public class Employee {
         return (int) (getSalary() - o.getSalary());
     }
 
-
 }

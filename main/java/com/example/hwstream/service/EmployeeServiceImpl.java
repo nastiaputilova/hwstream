@@ -68,6 +68,11 @@ import java.util.*;
         return Collections.unmodifiableCollection(employees.values());
     }
 
+    @Override
+    public boolean getAll() {
+        return false;
+    }
+
 
     private boolean validateInput(String firstName, String lastName){
         return StringUtils.isAlpha(firstName) && StringUtils.isAlpha(lastName);
