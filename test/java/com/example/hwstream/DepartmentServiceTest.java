@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.awt.*;
+import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -36,7 +37,10 @@ public class DepartmentServiceTest {
     public void BeforeEach(){
         java.util.List<Employee> employees = List.of(
                 new Employee ("Ivan", "Ivanov", 1, 1000),
-                new Employee ("Stepan", "Stepanov", 2, 2000)
+                new Employee ("Stepan", "Stepanov", 1, 2000),
+                new Employee ("Sergey", "Sergeev", 2, 3000),
+                new Employee ("Diana", "Dianova", 2, 2000),
+                new Employee ("Alena", "Sidorova", 2, 4000)
         );
         when(employeeService.getAll()).thenReturn(employees);
 
@@ -72,11 +76,40 @@ public class DepartmentServiceTest {
                 .isThrownBy(() -> departmentService.findEmployeeWithMinSalaryFromDepartment(3));
     }
 
+
+    @ParameterizedTest
+    @MethodSource("EmployeesFromDepartmentParams")
+
+    public findEmployeesFromDepartmentTest(int department, java.util.List<Employee> expected){
+        assertThat(departmentService.findEmployeeWithMinSalaryFromDepartment(department)).containsExactlyElementsOf(expected);
+
+    }
+
+    @Test
+
+    public findEmployeesFromDepartmentTest2(){
+        assertThatExceptionOfType(EmployeeNotFoundException.class)
+                .isThrownBy(() -> departmentService.findEmployeeWithMinSalaryFromDepartment(3));
+    }
+
+    @Test
+
+    public findEmployeesTest(){
+        assertThat(departmentService.findEmployees()).containsAllEntriesOf(
+                Map.of(
+                        1, List.of(new Employee("Stepan", "Stepanov", 1, 1000),(new Employee("Ivan", "Ivanov", 1, 1000)),
+                        2, List.of(new Employee ("Sergey", "Sergeev", 2, 3000),
+                                        new Employee ("Diana", "Dianova", 2, 2000),
+                                        new Employee ("Alena", "Sidorova", 2, 4000))
+                )
+        );
+    }
+
     public static Stream<Arguments> EmployeeWithMaxSalaryParams(){
 
         return Stream.of(
-                of(1, new Employee("Sergei", "Sergeev", 3, 3000)),
-                of(2, new Employee("Diana", "Dianova", 2, 4000))
+                of(1, new Employee("Sergei", "Sergeev", 2, 3000)),
+                of(2, new Employee ("Alena", "Sidorova", 2, 4000))
         );
 
 
@@ -84,9 +117,21 @@ public class DepartmentServiceTest {
     public static Stream<Arguments> EmployeeWithMinSalaryParams(){
 
         return Stream.of(
-                of(1, new Employee("Alena", "Sidorova", 3, 2000)),
-                of(2, new Employee("Stepan", "Stepanov", 1, 1000))
+                of(1,new Employee ("Ivan", "Ivanov", 1, 1000)),
+                of(2, new Employee ("Diana", "Dianova", 2, 2000))
         );
 
     }
+    public static Stream<Arguments> EmployeesFromDepartmentParams(){
+
+        return Stream.of(
+                of(1, List.of(new Employee("Stepan", "Stepanov", 1, 1000),new Employee ("Ivan", "Ivanov", 1, 1000)),
+                of(2, List.of(new Employee ("Sergey", "Sergeev", 2, 3000),
+                        new Employee ("Diana", "Dianova", 2, 2000),
+                        new Employee ("Alena", "Sidorova", 2, 4000))
+        );
+
+    }
+
+
 }

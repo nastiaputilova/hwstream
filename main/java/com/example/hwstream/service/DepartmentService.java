@@ -41,4 +41,6 @@ public class DepartmentService {
         return employeeService.findAll().stream()
                 .collect(Collectors.groupingBy(Employee::getDepartment));
     }
+
+
 }
